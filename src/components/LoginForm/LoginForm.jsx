@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import './LoginForm.css';
 import { FaUser, FaLock } from "react-icons/fa";
+import { Link } from 'react-router-dom';
 
 const LoginForm = () => {
 
     const [action] = useState('');
-
 
     return (
         <div className={`wrapper${action}`}>
@@ -22,7 +22,7 @@ const LoginForm = () => {
                         <input type="password" placeholder='password' required/>
                     </div>
 
-                    <button type="submit">로그인</button>
+                    <Link to="/main"><button type="submit" a href="/main">로그인</button></Link>
                     
                     <div className="register-link">
                         <p>Don't have an account? <a href="/join" className="link-button">가입하기</a></p>

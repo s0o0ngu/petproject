@@ -1,0 +1,19 @@
+.title {
+    padding: 10px 20px;
+    text-align: justify;
+}
+
+.mine {
+    padding: 10px 20px;
+}
+.name {
+    display: flex;
+}
+
+.email {
+    display: flex;
+}
+
+.mypet {
+    display: flex;
+}
