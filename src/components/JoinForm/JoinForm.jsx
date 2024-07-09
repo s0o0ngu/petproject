@@ -1,3 +1,4 @@
+//css 바꿔
 import React, { useState } from 'react';
 import './JoinForm.css';
 import { FaUser, FaLock, FaEnvelope } from "react-icons/fa";
@@ -22,7 +23,7 @@ const JoinForm = () => {
                     <div className="title">ID(email)</div>
                     <div className="input-box">
                         <FaEnvelope className='icon'/>
-                        <input type="text" placeholder='email@domain.com)' required/>
+                        <input type="text" placeholder='email@domain.com' required/>
                     </div>
                     
                     <div className="title">PASSWORD</div>
