@@ -1,23 +1,38 @@
-
-//목표 추가하면 가로로 뜨는데 이거 세로로 바꾸고
-//인풋, 색, 추가하기 버튼도 가로인데 세로로 바꾸면됨.
-
-import React, {useState} from 'react';
+// MyPet.jsx
+import React, { useState, useContext } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import './MyPet.css';
-import { Link } from 'react-router-dom';
+import { PetContext } from '../contexts/PetContext';
 
 function MyPet() {
-  const [goals, setGoals] = useState([
-    { color: 'yellow', text: '약 먹기' },
-    { color: 'pink', text: '산책하기' },
-    { color: 'blue', text: '양치하기' }
-  ]);
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const { pets } = useContext(PetContext);
+  const pet = pets.find(p => p.id === id);
+
+  const [profileImage, setProfileImage] = useState(pet ? pet.profileImage || null : null);
+  const [goals, setGoals] = useState(pet ? pet.goals || [] : []);
   const [newGoalText, setNewGoalText] = useState('');
-  const [selectedColor, setSelectedColor] = useState('pink');
+  const [selectedColor, setSelectedColor] = useState('yellow');
+
+  if (!pet) {
+    return <div>반려동물을 찾을 수 없습니다.</div>;
+  }
+
+  const handleProfileImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfileImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleAddGoal = () => {
     if (newGoalText.trim()) {
-      setGoals([...goals, { color: selectedColor, text: newGoalText }]);
+      setGoals([...goals, { color: selectedColor, title: newGoalText.trim() }]);
       setNewGoalText('');
     }
   };
@@ -27,19 +42,46 @@ function MyPet() {
     setGoals(updatedGoals);
   };
 
+  const handleGoalTextChange = (e) => {
+    setNewGoalText(e.target.value);
+  };
+
+  const handleBackClick = () => {
+    navigate(-1); // 이전 페이지로 이동
+  };
+
   return (
-    <div className="pet-goals-page">
+    <div className="my-page">
       <header className="header">
-        <Link to="/mypage"><span className="back-arrow">←</span></Link>
-        <span className="header-title">설이</span>
+        <span className="back-arrow" onClick={handleBackClick}>←</span>
+        <span className="header-title">{pet.name}</span>
       </header>
       <div className="content">
+        <div className="profile-section">
+          <span className="profile-label">프로필사진</span>
+          <label htmlFor="profileImageInput" className="profile-image-container">
+            <img
+              src={profileImage || "https://via.placeholder.com/150"}
+              alt="프로필 사진"
+              className="profile-image"
+            />
+            <input
+              id="profileImageInput"
+              type="file"
+              accept="image/*"
+              onChange={handleProfileImageChange}
+              style={{ display: 'none' }}
+            />
+          </label>
+        </div>
         <div className="item">
           <span className="label">하루 목표</span>
+        </div>
+        <div className="goals-list">
           {goals.map((goal, index) => (
-            <div className="goal" key={index}>
+            <div key={index} className="goal-item">
               <span className={`goal-color ${goal.color}`}></span>
-              <span className="goal-text">{goal.text}</span>
+              <span className="goal-text">{goal.title}</span>
               <button className="remove-button" onClick={() => handleRemoveGoal(index)}>−</button>
             </div>
           ))}
@@ -49,10 +91,10 @@ function MyPet() {
             className="goal-input"
             placeholder="목표 이름"
             value={newGoalText}
-            onChange={(e) => setNewGoalText(e.target.value)}
+            onChange={handleGoalTextChange}
           />
           <div className="color-options">
-            {['pink', 'yellow', 'purple', 'green', 'blue'].map((color) => (
+            {['yellow', 'pink', 'purple', 'green', 'blue'].map((color) => (
               <span
                 key={color}
                 className={`color ${color} ${selectedColor === color ? 'selected' : ''}`}
